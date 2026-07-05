@@ -24,7 +24,8 @@ DATA_DIR = os.getenv("DATA_DIR", os.path.join(os.path.abspath(__file__)))
 DEFAULT_RIOT_BASE = os.path.join(os.path.abspath(__file__), "_RIOT")
 RIOTBASE = os.path.abspath(os.getenv("RIOTBASE", DEFAULT_RIOT_BASE))
 
-RIOT_DOC_BASE_URL = "https://api.riot-os.org"
+RIOT_API_BASE_URL = "https://api.riot-os.org"
+RIOT_DOC_BASE_URL = "https://doc.riot-os.org"
 TEMPLATE_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 #
@@ -40,12 +41,12 @@ CPU_TEMPLATE = """- name: ${name}
 
 DRIVERS_TEMPLATE = """- name: ${name}
   parent: drivers_${parent}
-  apiurl: ${doc_url}/group__drivers__${group}.html
+  apiurl: ${api_url}/group__drivers__${group}.html
 """
 
 DRIVER_CATEGORIES_TEMPLATE = """- name: ${name}
   group: drivers_${group}
-  apiurl: ${doc_url}/group__drivers__${group}.html
+  apiurl: ${api_url}/group__drivers__${group}.html
 """
 
 CONTRIBUTORS_TEMPLATE = """- login: ${login}
@@ -224,6 +225,7 @@ def render_data_to_file(name, data):
         f_dest.write("# File generated automatically, please don't edit!!\n")
         for elem in data:
             template = Template(TEMPLATES[name])
+            elem.update({"api_url": RIOT_API_BASE_URL})
             elem.update({"doc_url": RIOT_DOC_BASE_URL})
             f_dest.write(template.substitute(**elem))
 
